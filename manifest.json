@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Code Color Preview",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Shows color previews next to hex and RGB codes in web pages",
 
   "permissions": ["storage", "activeTab", "<all_urls>"],
@@ -15,7 +15,7 @@
 
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "icon.png",
+    "default_icon": "icon.svg",
     "default_title": "Code Color Preview Settings"
   },
 
@@ -28,6 +28,6 @@
   ],
 
   "icons": {
-    "48": "icon.png"
+    "48": "icon.svg"
   }
 }

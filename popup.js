@@ -110,33 +110,52 @@ function renderSiteLists(settings) {
   const enabledDomains = settings.enabledSites.filter((s) => isDomain(s));
   const enabledPages = settings.enabledSites.filter((s) => !isDomain(s));
 
-  // 2. Disabled list contains only specific pages (because we don't disable websites, we just don't enable them)
-  // We filter out domains just in case old data exists
+  // 2. Disabled list contains only specific pages
   const disabledPages = settings.disabledSites.filter((s) => !isDomain(s));
 
-  // Helper to render HTML
+  // Helper to render HTML securely using DOM creation instead of innerHTML
   const renderItems = (items, container, listType) => {
+    // Clear current content
+    container.textContent = "";
+
     if (items.length === 0) {
-      container.innerHTML = '<div class="empty-msg">List is empty</div>';
+      const emptyMsg = document.createElement("div");
+      emptyMsg.className = "empty-msg";
+      emptyMsg.textContent = "List is empty";
+      container.appendChild(emptyMsg);
       return;
     }
-    container.innerHTML = items
-      .map(
-        (item) => `
-      <div class="site-item">
-        <span title="${item}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;">${item}</span>
-        <button class="remove-btn" data-val="${item}" data-list="${listType}">×</button>
-      </div>
-    `,
-      )
-      .join("");
+
+    items.forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "site-item";
+
+      const span = document.createElement("span");
+      span.title = item;
+      span.style.overflow = "hidden";
+      span.style.textOverflow = "ellipsis";
+      span.style.whiteSpace = "nowrap";
+      span.style.maxWidth = "220px";
+      span.textContent = item;
+
+      const btn = document.createElement("button");
+      btn.className = "remove-btn";
+      btn.dataset.val = item;
+      btn.dataset.list = listType;
+      btn.textContent = "×";
+
+      row.appendChild(span);
+      row.appendChild(btn);
+      container.appendChild(row);
+    });
   };
 
   renderItems(enabledDomains, enabledWebsitesList, "enabled");
   renderItems(enabledPages, enabledPagesList, "enabled");
   renderItems(disabledPages, disabledList, "disabled");
 
-  // Re-attach listeners
+  // Re-attach listeners using event delegation or direct attachment
+  // Since we recreated buttons, we need to attach listeners to the new buttons
   document.querySelectorAll(".remove-btn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const val = e.target.dataset.val;
@@ -202,15 +221,13 @@ async function toggleCurrentWebsite() {
 
   if (isDomainEnabled) {
     // Disable it (Remove from enabled list)
-    // We do NOT add it to disabledSites, because default is disabled.
     settings.enabledSites = settings.enabledSites.filter(
       (s) => s !== currentDomain,
     );
   } else {
     // Enable it (Add to enabled list)
     settings.enabledSites.push(currentDomain);
-    // Also clean up any "disabled page" entries for this domain to avoid conflicts
-    // (Optional, but cleaner logic)
+    // Clean up potential conflicts
     settings.disabledSites = settings.disabledSites.filter(
       (s) => !s.includes(currentDomain),
     );
