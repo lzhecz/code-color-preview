@@ -1,0 +1,475 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <style>
+            :root {
+                --bg-color: #181a1b;
+                --text-color: #e8e6e3;
+                --accent-color: #008080; /* Teal */
+                --border-color: #303436;
+                --panel-bg: #242729;
+                --danger-color: #cc3333;
+            }
+
+            body {
+                width: 360px;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    sans-serif;
+                margin: 0;
+                font-size: 14px;
+            }
+
+            /* --- HEADER --- */
+            .header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 16px;
+                background-color: var(--panel-bg);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .brand {
+                font-weight: 700;
+                font-size: 14px;
+                color: #d46a43;
+                letter-spacing: 0.5px;
+                margin: 0 8px;
+            }
+
+            /* Site Toggle (Top Left) */
+            .site-toggle-btn {
+                background: transparent;
+                border: 1px solid #555;
+                color: #888;
+                padding: 6px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                transition: all 0.2s;
+                max-width: 160px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .site-toggle-btn:hover {
+                border-color: #777;
+                color: #aaa;
+            }
+
+            /* ENABLED STATE (Checkmark) */
+            .site-toggle-btn.active {
+                background-color: rgba(0, 128, 128, 0.15);
+                border-color: var(--accent-color);
+                color: var(--accent-color);
+            }
+            .site-toggle-btn.active::before {
+                content: "✓";
+                font-weight: bold;
+            }
+
+            /* DISABLED STATE (X Mark) */
+            .site-toggle-btn.disabled-state {
+                border-color: var(--danger-color);
+                color: var(--danger-color);
+                background-color: rgba(204, 51, 51, 0.1);
+            }
+            .site-toggle-btn.disabled-state::before {
+                content: "✕";
+                font-weight: bold;
+            }
+
+            /* Main Toggle (Top Right) */
+            .main-toggle-wrapper {
+                display: flex;
+                align-items: center;
+            }
+
+            .switch-btn {
+                background: #303436;
+                border: 1px solid var(--border-color);
+                color: #aaa;
+                padding: 5px 10px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 600;
+            }
+            .switch-btn:first-child {
+                border-radius: 4px 0 0 4px;
+            }
+            .switch-btn:last-child {
+                border-radius: 0 4px 4px 0;
+                border-left: none;
+            }
+
+            .switch-btn.active {
+                background-color: var(--accent-color);
+                color: white;
+                border-color: var(--accent-color);
+            }
+
+            /* --- TABS --- */
+            .tabs {
+                display: flex;
+                border-bottom: 1px solid var(--border-color);
+                background-color: var(--panel-bg);
+            }
+
+            .tab-btn {
+                flex: 1;
+                background: transparent;
+                border: none;
+                padding: 10px 0;
+                color: #888;
+                cursor: pointer;
+                font-weight: 500;
+                border-bottom: 2px solid transparent;
+                transition: color 0.2s;
+            }
+
+            .tab-btn:hover {
+                color: var(--text-color);
+            }
+            .tab-btn.active {
+                color: var(--accent-color);
+                border-bottom-color: var(--accent-color);
+            }
+
+            /* --- CONTENT --- */
+            .tab-content {
+                display: none;
+                padding: 16px;
+            }
+            .tab-content.active {
+                display: block;
+            }
+
+            /* Controls */
+            .control-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid #252525;
+            }
+            .control-row:last-child {
+                border-bottom: none;
+            }
+
+            /* Standard Switch */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 40px;
+                height: 20px;
+            }
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #444;
+                transition: 0.4s;
+                border-radius: 20px;
+            }
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 14px;
+                width: 14px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+            input:checked + .slider {
+                background-color: var(--accent-color);
+            }
+            input:checked + .slider:before {
+                transform: translateX(20px);
+            }
+
+            /* Action Buttons */
+            .btn-block {
+                display: block;
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 8px;
+                background-color: #303436;
+                border: 1px solid var(--border-color);
+                color: var(--text-color);
+                border-radius: 4px;
+                cursor: pointer;
+                text-align: center;
+                font-weight: 500;
+            }
+            .btn-block:hover {
+                background-color: #404446;
+            }
+
+            .btn-half {
+                width: 48%;
+                padding: 8px;
+                background-color: #303436;
+                border: 1px solid var(--border-color);
+                color: var(--text-color);
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+            }
+            .btn-half:hover {
+                background-color: #404446;
+            }
+
+            /* Site Lists */
+            .list-section {
+                margin-bottom: 16px;
+            }
+
+            .list-header-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 5px;
+                border-bottom: 1px solid #333;
+                padding-bottom: 4px;
+            }
+
+            .list-title {
+                color: var(--accent-color);
+                font-weight: 600;
+                font-size: 13px;
+            }
+
+            .clear-btn {
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 11px;
+                cursor: pointer;
+                text-decoration: underline;
+            }
+            .clear-btn:hover {
+                color: var(--text-color);
+            }
+
+            .site-list-box {
+                background-color: var(--panel-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                max-height: 100px;
+                overflow-y: auto;
+            }
+            .site-item {
+                padding: 6px 10px;
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid var(--border-color);
+                font-size: 12px;
+            }
+            .site-item:last-child {
+                border-bottom: none;
+            }
+            .remove-btn {
+                background: none;
+                border: none;
+                color: var(--danger-color);
+                cursor: pointer;
+                font-size: 16px;
+                line-height: 1;
+                padding: 0 4px;
+            }
+            .empty-msg {
+                padding: 10px;
+                text-align: center;
+                color: #666;
+                font-style: italic;
+                font-size: 12px;
+            }
+
+            /* Footer Link */
+            .footer-info {
+                color: #666;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 20px;
+                line-height: 1.6;
+            }
+            .footer-link {
+                color: #6ab0f3;
+                text-decoration: none;
+            }
+            .footer-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <div class="header">
+            <!-- Top Left: Current Website Toggle -->
+            <button
+                id="siteToggleBtn"
+                class="site-toggle-btn"
+                title="Click to toggle"
+            >
+                Loading...
+            </button>
+
+            <!-- Top Right: Global Extension Toggle -->
+            <div class="main-toggle-wrapper">
+                <div id="extOn" class="switch-btn active">On</div>
+                <div id="extOff" class="switch-btn">Off</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-target="tab-general">
+                General
+            </button>
+            <button class="tab-btn" data-target="tab-sites">Site List</button>
+            <button class="tab-btn" data-target="tab-more">More</button>
+        </div>
+
+        <!-- Tab: General -->
+        <div id="tab-general" class="tab-content active">
+            <div class="control-row">
+                <label>Detect colors without #</label>
+                <label class="switch">
+                    <input type="checkbox" id="noHashColors" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="control-row">
+                <label>Detect RGB/RGBA</label>
+                <label class="switch">
+                    <input type="checkbox" id="scanRgb" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <hr
+                style="
+                    border-color: var(--border-color);
+                    opacity: 0.3;
+                    margin: 15px 0;
+                "
+            />
+
+            <button id="showOnce" class="btn-block">
+                Show on Current Page (Until Reload)
+            </button>
+
+            <!-- Page Specific Buttons -->
+            <div
+                style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 12px;
+                "
+            >
+                <button id="enablePage" class="btn-half">
+                    Enable This Page
+                </button>
+                <button id="disablePage" class="btn-half">
+                    Disable This Page
+                </button>
+            </div>
+            <div
+                style="
+                    text-align: center;
+                    color: #555;
+                    font-size: 10px;
+                    margin-top: 4px;
+                "
+            >
+                Overrides website settings for specific URL
+            </div>
+        </div>
+
+        <!-- Tab: Site List -->
+        <div id="tab-sites" class="tab-content">
+            <!-- 1. Enabled Websites -->
+            <div class="list-section">
+                <div class="list-header-row">
+                    <span class="list-title">Enabled Websites</span>
+                    <button class="clear-btn" id="clearEnabledSites">
+                        Clear List
+                    </button>
+                </div>
+                <div class="site-list-box" id="enabledWebsitesList">
+                    <div class="empty-msg">No websites enabled</div>
+                </div>
+            </div>
+
+            <!-- 2. Enabled Pages -->
+            <div class="list-section">
+                <div class="list-header-row">
+                    <span class="list-title">Enabled Pages</span>
+                    <button class="clear-btn" id="clearEnabledPages">
+                        Clear List
+                    </button>
+                </div>
+                <div class="site-list-box" id="enabledPagesList">
+                    <div class="empty-msg">No pages enabled</div>
+                </div>
+            </div>
+
+            <!-- 3. Disabled Pages -->
+            <div class="list-section">
+                <div class="list-header-row">
+                    <span class="list-title">Disabled Pages</span>
+                    <button class="clear-btn" id="clearDisabled">
+                        Clear List
+                    </button>
+                </div>
+                <div class="site-list-box" id="disabledList">
+                    <div class="empty-msg">No pages disabled</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: More -->
+        <div id="tab-more" class="tab-content">
+            <div class="control-row">
+                <label>Debug Mode</label>
+                <label class="switch">
+                    <input type="checkbox" id="debugMode" />
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="footer-info">
+                <p>Color Preview Extension<br />v2.1.0</p>
+                <a
+                    href="https://github.com/lzhecz/code-color-preview"
+                    target="_blank"
+                    class="footer-link"
+                >
+                    GitHub Repository
+                </a>
+            </div>
+        </div>
+
+        <script src="popup.js"></script>
+    </body>
+</html>
