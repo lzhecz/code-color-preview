@@ -1,5 +1,8 @@
 # Color Preview Extension
 
+[![Firefox](https://img.shields.io/badge/Firefox-addons.mozilla.org-blue?style=for-the-badge&logo=firefox)](https://addons.mozilla.org/en-US/firefox/addon/code-color-preview/)
+
+
 A Firefox extension that displays inline color previews next to hex and RGB color codes.
 
 ![Extension Screenshot](screenshot_preview.png)
@@ -20,6 +23,10 @@ A Firefox extension that displays inline color previews next to hex and RGB colo
   - Temporary show mode (until page reload)
 
 ## Installation
+
+### From Mozilla Addons
+
++ Link - https://addons.mozilla.org/en-US/firefox/addon/code-color-preview/
 
 ### From Release
 
